@@ -8,11 +8,6 @@ function Canvas() {
   let infectingStroke = 2
   let cells = []
   let ctx
-  let genome = {
-    r: 220,
-    g: 220,
-    b: 110
-  }
 
   const canvasRef = useRef(null)
 
@@ -27,7 +22,7 @@ function Canvas() {
 
     for (let i = 0; i < cellsInARow; i++) {
       for (let j = 0; j < cellsInARow; j++) {
-        let cell = new Cell(cellSize, i, j, ctx, genome)
+        let cell = new Cell(cellSize, i, j, ctx, undefined)
         cells[i][j] = cell
       }
     }
@@ -71,7 +66,7 @@ function Canvas() {
 
         if (cellsToInfect) {
           for (let i = 0; i < cellsToInfect.length; i++) {
-            cellsToInfect[i].newGenome(newGenome)
+            cellsToInfect[i].receiveGenome(newGenome)
             cellsToInfect[i].paint()
           }
         }

@@ -10,14 +10,14 @@ export default class Cell {
 
   paint() {
     this.ctx.beginPath();
-    this.ctx.fillStyle = `rgba(${this.genome.r}, ${this.genome.g}, ${this.genome.b}, ${this.foodAmount / 100})`;
+    this.ctx.fillStyle = `rgba(${this.genome ? this.genome.r : 220}, ${this.genome ? this.genome.r : 220}, ${this.genome ? this.genome.r : 110}, ${this.foodAmount / 100})`;
     //this.ctx.strokeStyle = "#000000";
     this.ctx.rect(this.i * this.cellSize, this.j * this.cellSize, this.cellSize, this.cellSize);
     //this.ctx.stroke();
     this.ctx.fill();
   }
 
-  newGenome(newGenome) {
+  receiveGenome(newGenome) {
     this.genome = newGenome
   }
 }
