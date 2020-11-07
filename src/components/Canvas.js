@@ -1,32 +1,48 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import Cell from "../Cell.js"
+
+let cellSize = 1
+let cellsInARow = 400
+let infectingStroke = 2
+let cells = []
+
 
 function Canvas() {
 
-  let cellSize = 2
-  let cellsInARow = 200
-  let infectingStroke = 2
-  let cells = []
-  let ctx
-
   const canvasRef = useRef(null)
+
+
+  const [newGenome, setnewGenome] = useState({
+    r: 120,
+    g: 120,
+    b: 210
+  })
 
   useEffect(() => {
     const canvas = canvasRef.current
+
+    const ctx = canvas.getContext('2d')
+    //const canvas = canvasRef.current
     // eslint-disable-next-line
-    ctx = canvas.getContext('2d')
 
-    for (let i = 0; i < cellsInARow; i++) {
-      cells[i] = new Array(cellsInARow)
-    }
+    if (cells.length === 0) {
+      for (let i = 0; i < cellsInARow; i++) {
+        cells[i] = new Array(cellsInARow)
+      }
 
-    for (let i = 0; i < cellsInARow; i++) {
-      for (let j = 0; j < cellsInARow; j++) {
-        let cell = new Cell(cellSize, i, j, ctx, undefined)
-        cells[i][j] = cell
+      for (let i = 0; i < cellsInARow; i++) {
+        for (let j = 0; j < cellsInARow; j++) {
+          let cell = new Cell(cellSize, i, j, ctx, undefined)
+          cells[i][j] = cell
+        }
+      }
+
+      for (let i = 0; i < cells.length; i++) {
+        for (let j = 0; j < cells[i].length; j++) {
+          cells[i][j].paint()
+        }
       }
     }
-
 
     function getCellsToInfect(canvas, event) {
       let rect = canvas.getBoundingClientRect();
@@ -38,26 +54,26 @@ function Canvas() {
 
       let cellsToInfect = []
 
-      for (let i = clickedi - infectingStroke; i < clickedi + infectingStroke; i++) {
-        for (let j = clickedj - infectingStroke; j < clickedj + infectingStroke; j++) {
+      for (let i = clickedi - infectingStroke; i <= clickedi + infectingStroke; i++) {
+        for (let j = clickedj - infectingStroke; j <= clickedj + infectingStroke; j++) {
           if (i < 0 || j < 0 || i > cellsInARow - 1 || j > cellsInARow - 1) {
-            return
+            //inexisting indexes
+          } else if (
+            (i === clickedi - infectingStroke && j === clickedj - infectingStroke) ||
+            (i === clickedi + infectingStroke && j === clickedj + infectingStroke) ||
+            (i === clickedi + infectingStroke && j === clickedj - infectingStroke) ||
+            (i === clickedi - infectingStroke && j === clickedj + infectingStroke)
+          ) {
+            // corner indexes (without them there's a circular appearence to the stroke)
+          } else {
+            cellsToInfect.push(cells[i][j])
           }
-          cellsToInfect.push(cells[i][j])
         }
       }
-
       return cellsToInfect
-
     }
 
     let mouseDown = false
-
-    let newGenome = {
-      r: 120,
-      g: 120,
-      b: 210
-    }
 
     canvas.addEventListener("mousedown", function (e) {
       if (e.button === 0) { //only the left click
@@ -79,7 +95,7 @@ function Canvas() {
 
         if (cellsToInfect) {
           for (let i = 0; i < cellsToInfect.length; i++) {
-            cellsToInfect[i].newGenome(newGenome)
+            cellsToInfect[i].receiveGenome(newGenome)
             cellsToInfect[i].paint()
           }
         }
@@ -90,17 +106,7 @@ function Canvas() {
       mouseDown = false
     })
 
-    for (let i = 0; i < cells.length; i++) {
-      for (let j = 0; j < cells[i].length; j++) {
-        cells[i][j].paint()
-      }
-    }
-  }, [])
-
-
-
-
-
+  }, [newGenome])
 
 
 
@@ -112,10 +118,47 @@ function Canvas() {
 
   //repeat()
 
+  const setPurple = () => {
+    setnewGenome({ r: 120, g: 120, b: 210 })
+  }
+
+  const setGreen = () => {
+    setnewGenome({ r: 120, g: 210, b: 120 })
+  }
+
+  useEffect(() => {
+    console.log(newGenome)
+
+  }, [newGenome])
 
   return (
-    <canvas ref={canvasRef} width={cellSize * cellsInARow} height={cellSize * cellsInARow} />
+    <>
+      <canvas ref={canvasRef} width={cellSize * cellsInARow} height={cellSize * cellsInARow} />
+      <div>
+        <button onClick={setPurple}>purple</button>
+        <button onClick={setGreen}>green</button>
+        <div>{newGenome.g === 120 ? "purple" : "green"}</div>
+      </div>
+
+    </>
   );
 }
 
 export default Canvas;
+
+
+
+
+/*
+
+||
+(i === clickedi - infectingStroke && j === clickedj - infectingStroke + infStrokeCorr) ||
+(i === clickedi - infectingStroke + infStrokeCorr && j === clickedj - infectingStroke) ||
+(i === clickedi + infectingStroke - infStrokeCorr && j === clickedj - infectingStroke) ||
+(i === clickedi + infectingStroke && j === clickedj - infectingStroke + infStrokeCorr) ||
+(i === clickedi - infectingStroke && j === clickedj + infectingStroke - infStrokeCorr) ||
+(i === clickedi - infectingStroke + infStrokeCorr && j === clickedj + infectingStroke) ||
+(i === clickedi + infectingStroke && j === clickedj + infectingStroke - infStrokeCorr) ||
+(i === clickedi + infectingStroke - infStrokeCorr && j === clickedj + infectingStroke)
+
+*/
