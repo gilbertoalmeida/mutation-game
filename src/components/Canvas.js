@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react'
 import Cell from "../Cell.js"
+import { getCellsToInfect } from "../utils/getCellsToInfect"
 
 let cellSize = 1
 let cellsInARow = 400
-let infectingStroke = 2
 let cells = []
 
 
@@ -39,46 +39,18 @@ function Canvas() {
       }
     }
 
-    function getCellsToInfect(canvas, event) {
-      let rect = canvas.getBoundingClientRect();
-      let x = event.clientX - rect.left;
-      let y = event.clientY - rect.top;
-
-      let clickedi = Math.floor(x / cellSize)
-      let clickedj = Math.floor(y / cellSize)
-
-      let cellsToInfect = []
-
-      for (let i = clickedi - infectingStroke; i <= clickedi + infectingStroke; i++) {
-        for (let j = clickedj - infectingStroke; j <= clickedj + infectingStroke; j++) {
-          if (i < 0 || j < 0 || i > cellsInARow - 1 || j > cellsInARow - 1) {
-            //inexisting indexes
-          } else if (
-            (i === clickedi - infectingStroke && j === clickedj - infectingStroke) ||
-            (i === clickedi + infectingStroke && j === clickedj + infectingStroke) ||
-            (i === clickedi + infectingStroke && j === clickedj - infectingStroke) ||
-            (i === clickedi - infectingStroke && j === clickedj + infectingStroke)
-          ) {
-            // corner indexes (without them there's a circular appearence to the stroke)
-          } else {
-            cellsToInfect.push(cells[i][j])
-          }
-        }
-      }
-      return cellsToInfect
-    }
-
     let isMousedown = false
 
     const handleMousedown = (e) => {
       if (e.button === 0) { //only the left click
         isMousedown = true
-        let cellsToInfect = getCellsToInfect(canvas, e);
+        let cellsToInfect = getCellsToInfect(cellSize, cellsInARow, canvas, e);
+
 
         if (cellsToInfect) {
           for (let i = 0; i < cellsToInfect.length; i++) {
-            cellsToInfect[i].receiveGenome(newGenome)
-            cellsToInfect[i].paint()
+            cells[cellsToInfect[i][0]][cellsToInfect[i][1]].receiveGenome(newGenome)
+            cells[cellsToInfect[i][0]][cellsToInfect[i][1]].paint()
           }
         }
       }
@@ -86,12 +58,13 @@ function Canvas() {
 
     const handleMousemove = (e) => {
       if (isMousedown) {
-        let cellsToInfect = getCellsToInfect(canvas, e);
+        let cellsToInfect = getCellsToInfect(cellSize, cellsInARow, canvas, e);
+
 
         if (cellsToInfect) {
           for (let i = 0; i < cellsToInfect.length; i++) {
-            cellsToInfect[i].receiveGenome(newGenome)
-            cellsToInfect[i].paint()
+            cells[cellsToInfect[i][0]][cellsToInfect[i][1]].receiveGenome(newGenome)
+            cells[cellsToInfect[i][0]][cellsToInfect[i][1]].paint()
           }
         }
       }
@@ -110,6 +83,7 @@ function Canvas() {
       canvas.removeEventListener("mousemove", handleMousemove);
       canvas.removeEventListener("mouseup", handleMouseup);
     }
+
 
   }, [newGenome])
 
