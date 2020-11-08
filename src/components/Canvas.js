@@ -8,10 +8,7 @@ let cells = []
 
 
 function Canvas() {
-
   const canvasRef = useRef(null)
-
-
   const [newGenome, setnewGenome] = useState({
     r: 120,
     g: 120,
@@ -22,8 +19,6 @@ function Canvas() {
     const canvas = canvasRef.current
 
     const ctx = canvas.getContext('2d')
-    //const canvas = canvasRef.current
-    // eslint-disable-next-line
 
     if (cells.length === 0) {
       for (let i = 0; i < cellsInARow; i++) {
@@ -73,11 +68,11 @@ function Canvas() {
       return cellsToInfect
     }
 
-    let mouseDown = false
+    let isMousedown = false
 
-    canvas.addEventListener("mousedown", function (e) {
+    const handleMousedown = (e) => {
       if (e.button === 0) { //only the left click
-        mouseDown = true
+        isMousedown = true
         let cellsToInfect = getCellsToInfect(canvas, e);
 
         if (cellsToInfect) {
@@ -87,10 +82,10 @@ function Canvas() {
           }
         }
       }
-    })
+    }
 
-    canvas.addEventListener("mousemove", function (e) {
-      if (mouseDown) {
+    const handleMousemove = (e) => {
+      if (isMousedown) {
         let cellsToInfect = getCellsToInfect(canvas, e);
 
         if (cellsToInfect) {
@@ -100,11 +95,21 @@ function Canvas() {
           }
         }
       }
-    })
+    }
 
-    canvas.addEventListener("mouseup", function (e) {
-      mouseDown = false
-    })
+    const handleMouseup = () => {
+      isMousedown = false
+    }
+
+    canvas.addEventListener("mousedown", handleMousedown)
+    canvas.addEventListener("mousemove", handleMousemove)
+    canvas.addEventListener("mouseup", handleMouseup)
+
+    return () => {
+      canvas.removeEventListener("mousedown", handleMousedown);
+      canvas.removeEventListener("mousemove", handleMousemove);
+      canvas.removeEventListener("mouseup", handleMouseup);
+    }
 
   }, [newGenome])
 
@@ -126,14 +131,10 @@ function Canvas() {
     setnewGenome({ r: 120, g: 210, b: 120 })
   }
 
-  useEffect(() => {
-    console.log(newGenome)
-
-  }, [newGenome])
 
   return (
     <>
-      <canvas ref={canvasRef} width={cellSize * cellsInARow} height={cellSize * cellsInARow} />
+      <canvas id="canvas" ref={canvasRef} width={cellSize * cellsInARow} height={cellSize * cellsInARow} />
       <div>
         <button onClick={setPurple}>purple</button>
         <button onClick={setGreen}>green</button>
