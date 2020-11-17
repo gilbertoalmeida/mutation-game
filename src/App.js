@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react'
 import Canvas from './components/Canvas.js';
 import CycleControl from './components/CycleControl.js';
 import InfectingControl from './components/InfectingControl.js';
+import TopBar from './components/TopBar.js';
 
 
 
@@ -33,33 +34,35 @@ function App() {
   }
 
   return (
-    <Box m="auto" w="700px" >
-      <Flex>
-        <div>
-          <Canvas
-            cycleTimeOut={cycleTimeOut}
-            setcycleTimeOut={setcycleTimeOut}
-            cycleNumber={cycleNumber}
-            setcycleNumber={setcycleNumber}
-            newGenome={newGenome}
-          />
-          <CycleControl
-            cycleTimeOut={cycleTimeOut}
-            setcycleTimeOut={setcycleTimeOut}
-            cycleNumber={cycleNumber}
-            startCycle={startCycle}
-            stopCycle={stopCycle}
-          />
-        </div>
-        <Box ml="auto">
-          <InfectingControl
-            newGenome={newGenome}
-            setnewGenome={setnewGenome}
-          />
-        </Box>
-      </Flex>
+    <Box h="100%" style={{ backgroundColor: "#d9d9d9" }}>
+      <TopBar />
+      <Box m="auto" w="700px" mt={10}>
+        <Flex>
+          <div>
+            <Canvas
+              cycleTimeOut={cycleTimeOut}
+              setcycleTimeOut={setcycleTimeOut}
+              cycleNumber={cycleNumber}
+              setcycleNumber={setcycleNumber}
+              newGenome={newGenome}
+            />
+            <CycleControl
+              cycleTimeOut={cycleTimeOut}
+              setcycleTimeOut={setcycleTimeOut}
+              cycleNumber={cycleNumber}
+              startCycle={startCycle}
+              stopCycle={stopCycle}
+            />
+          </div>
+          <Box ml="auto">
+            <InfectingControl
+              newGenome={newGenome}
+              setnewGenome={setnewGenome}
+            />
+          </Box>
+        </Flex>
+      </Box>
     </Box>
-
   );
 }
 
