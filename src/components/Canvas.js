@@ -1,19 +1,23 @@
 import React, { useRef, useEffect, useState } from 'react'
 import Cell from "../Cell.js"
 import { getCellsToInfect } from "../utils/getCellsToInfect"
+import {
+  Button, ButtonGroup
+} from "@chakra-ui/react"
 
-let cellSize = 1
-let cellsInARow = 400
+let cellSize = 5
+let cellsInARow = 100
 let cells = []
 
 
-function Canvas() {
+function Canvas({ cycleTimeOut, setcycleTimeOut }) {
   const canvasRef = useRef(null)
   const [newGenome, setnewGenome] = useState({
     r: 120,
     g: 120,
     b: 210
   })
+
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -88,15 +92,6 @@ function Canvas() {
   }, [newGenome])
 
 
-
-
-  // const repeat = () => {
-  //   window.requestAnimationFrame(repeat)
-  //   console.log(window.event.clientX)
-  // }
-
-  //repeat()
-
   const setPurple = () => {
     setnewGenome({ r: 120, g: 120, b: 210 })
   }
@@ -105,13 +100,14 @@ function Canvas() {
     setnewGenome({ r: 120, g: 210, b: 120 })
   }
 
-
   return (
     <>
       <canvas id="canvas" ref={canvasRef} width={cellSize * cellsInARow} height={cellSize * cellsInARow} />
       <div>
-        <button onClick={setPurple}>purple</button>
-        <button onClick={setGreen}>green</button>
+        <ButtonGroup size="sm">
+          <Button onClick={setPurple} colorScheme="purple">Purple</Button>
+          <Button onClick={setGreen} colorScheme="green">Green</Button>
+        </ButtonGroup>
         <div>{newGenome.g === 120 ? "purple" : "green"}</div>
       </div>
 
