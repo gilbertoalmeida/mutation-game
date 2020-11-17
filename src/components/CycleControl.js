@@ -33,7 +33,3 @@ function CycleControl({ cycleTimeOut, setcycleTimeOut, cycleNumber, startCycle, 
 }
 
 export default CycleControl;
-
-
-
-

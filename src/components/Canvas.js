@@ -10,14 +10,8 @@ let cellsInARow = 100
 let cells = []
 
 
-function Canvas({ cycleTimeOut, setcycleTimeOut }) {
+function Canvas({ cycleTimeOut, setcycleTimeOut, newGenome }) {
   const canvasRef = useRef(null)
-  const [newGenome, setnewGenome] = useState({
-    r: 120,
-    g: 120,
-    b: 210
-  })
-
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -92,26 +86,8 @@ function Canvas({ cycleTimeOut, setcycleTimeOut }) {
   }, [newGenome])
 
 
-  const setPurple = () => {
-    setnewGenome({ r: 120, g: 120, b: 210 })
-  }
-
-  const setGreen = () => {
-    setnewGenome({ r: 120, g: 210, b: 120 })
-  }
-
   return (
-    <>
-      <canvas id="canvas" ref={canvasRef} width={cellSize * cellsInARow} height={cellSize * cellsInARow} />
-      <div>
-        <ButtonGroup size="sm">
-          <Button onClick={setPurple} colorScheme="purple">Purple</Button>
-          <Button onClick={setGreen} colorScheme="green">Green</Button>
-        </ButtonGroup>
-        <div>{newGenome.g === 120 ? "purple" : "green"}</div>
-      </div>
-
-    </>
+    <canvas id="canvas" ref={canvasRef} width={cellSize * cellsInARow} height={cellSize * cellsInARow} />
   );
 }
 

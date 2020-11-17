@@ -1,6 +1,8 @@
+import { Flex, Box } from '@chakra-ui/react';
 import React, { useState, useRef } from 'react'
 import Canvas from './components/Canvas.js';
 import CycleControl from './components/CycleControl.js';
+import InfectingControl from './components/InfectingControl.js';
 
 
 
@@ -14,6 +16,12 @@ function App() {
   cycleNumberRef.current = cycleNumber
   const [cycleIntervalID, setcycleIntervalID] = useState()
 
+  const [newGenome, setnewGenome] = useState({
+    r: 120,
+    g: 120,
+    b: 210
+  })
+
 
   const startCycle = () => {
     setcycleIntervalID(setTimeout(() => startCycle(), timeOutRef.current))
@@ -25,10 +33,32 @@ function App() {
   }
 
   return (
-    <div style={{ margin: "auto", display: "block", width: "500px" }}>
-      <Canvas cycleTimeOut={cycleTimeOut} setcycleTimeOut={setcycleTimeOut} cycleNumber={cycleNumber} setcycleNumber={setcycleNumber} />
-      <CycleControl cycleTimeOut={cycleTimeOut} setcycleTimeOut={setcycleTimeOut} cycleNumber={cycleNumber} startCycle={startCycle} stopCycle={stopCycle} />
-    </div>
+    <Box m="auto" w="700px" >
+      <Flex>
+        <div>
+          <Canvas
+            cycleTimeOut={cycleTimeOut}
+            setcycleTimeOut={setcycleTimeOut}
+            cycleNumber={cycleNumber}
+            setcycleNumber={setcycleNumber}
+            newGenome={newGenome}
+          />
+          <CycleControl
+            cycleTimeOut={cycleTimeOut}
+            setcycleTimeOut={setcycleTimeOut}
+            cycleNumber={cycleNumber}
+            startCycle={startCycle}
+            stopCycle={stopCycle}
+          />
+        </div>
+        <Box ml="auto">
+          <InfectingControl
+            newGenome={newGenome}
+            setnewGenome={setnewGenome}
+          />
+        </Box>
+      </Flex>
+    </Box>
 
   );
 }
