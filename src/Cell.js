@@ -24,7 +24,7 @@ export default class Cell {
   }
 
   metabolism() {
-    if (this.foodAmount < 10) {
+    if (this.foodAmount <= 0) {
       this.death()
     } else {
       this.eat()
@@ -46,7 +46,7 @@ export default class Cell {
   }
 
   eat() {
-    this.foodAmount -= 10
+    this.foodAmount -= Math.random() * 5
   }
 
   death() {

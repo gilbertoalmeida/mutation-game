@@ -7,8 +7,8 @@ import Cell from "./Cell.js"
 import { getCellsToInfect } from "./utils/getCellsToInfect"
 import { getNeighbourCells } from "./utils/getNeighbourCells"
 
-let cellSize = 2
-let cellsInARow = 200
+let cellSize = 1
+let cellsInARow = 500
 let cells = []
 let infectedCells = []
 
