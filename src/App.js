@@ -61,18 +61,16 @@ function App() {
         isMousedown = true
         let cellsToInfect = getCellsToInfect(cellSize, cellsInARow, canvas, e);
 
-
         if (cellsToInfect) {
           for (let i = 0; i < cellsToInfect.length; i++) {
-            cells[cellsToInfect[i][0]][cellsToInfect[i][1]].receiveGenome(newGenome)
-            cells[cellsToInfect[i][0]][cellsToInfect[i][1]].paint()
+            if (!cells[cellsToInfect[i][0]][cellsToInfect[i][1]].genome) { //it wasn't already infected
+              infectedCells.push(cells[cellsToInfect[i][0]][cellsToInfect[i][1]])
+            }
 
-            /* 
-            THIS IS A BIG PROBLEM:
-            Bc it is adding the same cells many times to the array.
-            So I can not use this array to call the functions only one time per cycle in each infected cell. Nor use it to count infected cells.
-            */
-            infectedCells.push(cells[cellsToInfect[i][0]][cellsToInfect[i][1]])
+            if (cells[cellsToInfect[i][0]][cellsToInfect[i][1]].genome !== newGenome) { //it's not infected with the active genome yet
+              cells[cellsToInfect[i][0]][cellsToInfect[i][1]].receiveGenome(newGenome)
+              cells[cellsToInfect[i][0]][cellsToInfect[i][1]].paint()
+            }
           }
         }
       }
@@ -82,18 +80,16 @@ function App() {
       if (isMousedown) {
         let cellsToInfect = getCellsToInfect(cellSize, cellsInARow, canvas, e);
 
-
         if (cellsToInfect) {
           for (let i = 0; i < cellsToInfect.length; i++) {
-            cells[cellsToInfect[i][0]][cellsToInfect[i][1]].receiveGenome(newGenome)
-            cells[cellsToInfect[i][0]][cellsToInfect[i][1]].paint()
+            if (!cells[cellsToInfect[i][0]][cellsToInfect[i][1]].genome) { //it wasn't already infected
+              infectedCells.push(cells[cellsToInfect[i][0]][cellsToInfect[i][1]])
+            }
 
-            /* 
-            THIS IS A BIG PROBLEM:
-            Bc it is adding the same cells many times to the array.
-            So I can not use this array to call the functions only one time per cycle in each infected cell. Nor use it to count infected cells.
-            */
-            infectedCells.push(cells[cellsToInfect[i][0]][cellsToInfect[i][1]])
+            if (cells[cellsToInfect[i][0]][cellsToInfect[i][1]].genome !== newGenome) { //it's not infected with the active genome yet
+              cells[cellsToInfect[i][0]][cellsToInfect[i][1]].receiveGenome(newGenome)
+              cells[cellsToInfect[i][0]][cellsToInfect[i][1]].paint()
+            }
           }
         }
       }
@@ -131,8 +127,6 @@ function App() {
         }
       }
 
-
-      //console.log(i)
       if (infectedCells[i]) {
         if (infectedCells[i].dead) {
           infectedCells.splice(i, 1)
