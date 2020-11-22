@@ -44,18 +44,22 @@ function InfectingControl({ newGenome, setnewGenome, existingCellSpecies, setexi
   const initialRef = React.useRef()
 
   const [modalSelectedColor, setmodalSelectedColor] = useState(poolOfCellColors[0])
+  const [modalCellName, setmodalCellName] = useState("")
+  const [invalidModalCellName, setinvalidModalCellName] = useState(false)
 
   useEffect(() => {
     let initialCells = [
       {
         cellName: "cell 1",
-        genome: poolOfCellColors[0].rgb,
-        colorName: poolOfCellColors[0].colorName
+        genome: {
+          color: poolOfCellColors[0]
+        }
       },
       {
         cellName: "cell 2",
-        genome: poolOfCellColors[1].rgb,
-        colorName: poolOfCellColors[1].colorName
+        genome: {
+          color: poolOfCellColors[1]
+        }
       }
     ]
 
@@ -64,21 +68,32 @@ function InfectingControl({ newGenome, setnewGenome, existingCellSpecies, setexi
   }, [setexistingCellSpecies])
 
   const addingNewCell = () => {
+    if (modalCellName === "") {
+      setinvalidModalCellName(true)
+      return
+    }
+
     const newCell = {
-      cellName: "Cell 3",
-      genome: modalSelectedColor.rgb,
-      colorName: modalSelectedColor.colorName
+      cellName: modalCellName,
+      genome: {
+        color: modalSelectedColor
+      }
     }
 
     setexistingCellSpecies(prevState => {
       return [...prevState, newCell]
     })
+    onClose()
   }
 
 
   return (
     <div>
-      <Button onClick={onOpen}>Add a cell type</Button>
+      <Button onClick={() => {
+        onOpen()
+        setmodalCellName("")
+        setinvalidModalCellName(false)
+      }}>Add a cell type</Button>
 
       <Modal
         isOpen={isOpen}
@@ -90,16 +105,22 @@ function InfectingControl({ newGenome, setnewGenome, existingCellSpecies, setexi
           <ModalHeader>Build your cell genome</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl>
+            <FormControl
+              isRequired
+              isInvalid={invalidModalCellName}
+            >
               <FormLabel>Species name</FormLabel>
-              <Input ref={initialRef} />
+              <Input
+                ref={initialRef}
+                onChange={e => setmodalCellName(e.target.value)} />
             </FormControl>
             <ButtonGroup>
-              {poolOfCellColors.map((cell, index) => <Button
+              {poolOfCellColors.map((cellColor, index) => <Button
                 key={index}
-                colorScheme={cell.colorName}
-                variant={modalSelectedColor.rgb.r === cell.rgb.r ? "solid" : "outline"}
-                onClick={() => setmodalSelectedColor(cell)}
+                colorScheme={cellColor.colorName}
+                variant={modalSelectedColor.rgb.r === cellColor.rgb.r ? "solid" : "outline"}
+                size="xs"
+                onClick={() => setmodalSelectedColor(cellColor)}
                 _focus={{
                   boxShadow: "none"
                 }}
@@ -124,7 +145,7 @@ function InfectingControl({ newGenome, setnewGenome, existingCellSpecies, setexi
       <Flex flexDirection="column" w="100%">
         {existingCellSpecies.map((cellSpecies, index) =>
           <Box key={index} maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden" p="6">
-            <Button onClick={() => setnewGenome(cellSpecies.genome)} colorScheme={cellSpecies.colorName} size="sm" w="100px">{cellSpecies.colorName}</Button>
+            <Button onClick={() => setnewGenome(cellSpecies.genome)} colorScheme={cellSpecies.genome.color.colorName} size="sm" w="100px">{cellSpecies.cellName}</Button>
           </Box>
         )}
       </Flex>

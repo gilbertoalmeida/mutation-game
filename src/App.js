@@ -25,9 +25,11 @@ function App() {
 
   //This default needs to change for the first default color
   const [newGenome, setnewGenome] = useState({
-    r: 120,
-    g: 120,
-    b: 210
+    color: {
+      colorName: "blue",
+      rgb: { r: 49, g: 130, b: 206 },
+      hexColor: "#3182CE"
+    }
   })
 
   const canvasRef = useRef(null)
