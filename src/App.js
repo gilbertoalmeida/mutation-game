@@ -14,6 +14,7 @@ let infectedCells = []
 
 function App() {
 
+  const [existingCellSpecies, setexistingCellSpecies] = useState([])
   const [cycleTimeOut, setcycleTimeOut] = useState(2400)
   const timeOutRef = useRef(cycleTimeOut)
   timeOutRef.current = cycleTimeOut
@@ -22,6 +23,7 @@ function App() {
   cycleNumberRef.current = cycleNumber
   const [cycleIntervalID, setcycleIntervalID] = useState()
 
+  //This default needs to change for the first default color
   const [newGenome, setnewGenome] = useState({
     r: 120,
     g: 120,
@@ -152,7 +154,7 @@ function App() {
   }
 
   return (
-    <Box h="100%" style={{ backgroundColor: "#d9d9d9" }}>
+    <Box h="100%" style={{ backgroundColor: "#F7FAFC" }}>
       <TopBar />
       <Box m="auto" w="700px" mt={10}>
         <Flex>
@@ -170,6 +172,8 @@ function App() {
             <InfectingControl
               newGenome={newGenome}
               setnewGenome={setnewGenome}
+              existingCellSpecies={existingCellSpecies}
+              setexistingCellSpecies={setexistingCellSpecies}
             />
           </Box>
         </Flex>

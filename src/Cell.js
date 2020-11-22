@@ -12,7 +12,7 @@ export default class Cell {
 
   paint() {
     this.ctx.beginPath();
-    this.ctx.fillStyle = `rgba(${this.genome ? this.genome.r : 210}, ${this.genome ? this.genome.g : 120}, ${this.genome ? this.genome.b : 120}, 1)`;
+    this.ctx.fillStyle = `rgba(${this.genome ? this.genome.r : 155}, ${this.genome ? this.genome.g : 44}, ${this.genome ? this.genome.b : 44}, 1)`;
     //this.ctx.strokeStyle = "#000000";
     this.ctx.rect(this.i * this.cellSize, this.j * this.cellSize, this.cellSize, this.cellSize);
     //this.ctx.stroke();
@@ -54,3 +54,14 @@ export default class Cell {
     this.dead = true
   }
 }
+
+
+
+
+/*
+Color:
+
+Background: #d9d9d9
+Petri dish, red.700: #9B2C2C (155, 44, 44)
+
+*/
