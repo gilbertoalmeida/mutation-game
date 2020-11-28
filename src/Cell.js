@@ -13,9 +13,10 @@ export default class Cell {
   paint() {
     this.ctx.beginPath();
     this.ctx.fillStyle = `rgba(${this.genome ? this.genome.color.rgb.r : 155}, ${this.genome ? this.genome.color.rgb.g : 44}, ${this.genome ? this.genome.color.rgb.b : 44}, 1)`;
-    //this.ctx.strokeStyle = "#000000";
-    this.ctx.rect(this.i * this.cellSize, this.j * this.cellSize, this.cellSize, this.cellSize);
-    //this.ctx.stroke();
+    //this.ctx.lineWidth = "1";
+    this.ctx.strokeStyle = "#000000";
+    this.ctx.rect(this.i * this.cellSize, this.j * this.cellSize, this.cellSize - 1, this.cellSize - 1);
+    this.ctx.stroke();
     this.ctx.fill();
   }
 
@@ -50,7 +51,13 @@ export default class Cell {
   }
 
   death() {
-    this.genome = { r: 0, g: 0, b: 0 }
+    this.genome = {
+      color: {
+        colorName: "grey",
+        rgb: { r: 45, g: 55, b: 72 },
+        hexColor: "#2D3748"
+      }
+    }
     this.dead = true
   }
 }

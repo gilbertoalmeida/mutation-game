@@ -9,7 +9,7 @@ const headingStyle = {
 export default function TopBar() {
   return (
     <Box p={4} >
-      <Box m="auto" w="700px" >
+      <Box m="auto" w="90%" >
         <Heading color="blue.600" size="lg" style={headingStyle}>Mutation</Heading>
       </Box>
     </Box>

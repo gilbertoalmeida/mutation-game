@@ -7,8 +7,13 @@ import Cell from "./Cell.js"
 import { getCellsToInfect } from "./utils/getCellsToInfect"
 import { getNeighbourCells } from "./utils/getNeighbourCells"
 
-let cellSize = 1
-let cellsInARow = 500
+let cellSize = 10
+let gameWidth = 0.9 * window.innerWidth
+let gameHeight = 0.85 * window.innerHeight
+let canvasWidth = gameWidth - 160
+let canvasHeight = gameHeight - 100
+let cellsInARow = Math.floor(canvasWidth / cellSize)
+let cellsInAColumn = Math.floor(canvasHeight / cellSize)
 let cells = []
 let infectedCells = []
 
@@ -39,31 +44,26 @@ function App() {
 
     const ctx = canvas.getContext('2d')
 
-    if (cells.length === 0) {
-      for (let i = 0; i < cellsInARow; i++) {
-        cells[i] = new Array(cellsInARow)
-      }
+    createCellsInCanvas(ctx);
 
-      for (let i = 0; i < cellsInARow; i++) {
-        for (let j = 0; j < cellsInARow; j++) {
-          let cell = new Cell(cellSize, i, j, ctx, null)
-          cells[i][j] = cell
-        }
-      }
-
-      for (let i = 0; i < cells.length; i++) {
-        for (let j = 0; j < cells[i].length; j++) {
-          cells[i][j].paint()
-        }
-      }
+    let resizeTimeOut;
+    function resizedw() {
+      console.log("resized")
+      createCellsInCanvas(ctx);
     }
+    window.onresize = function () {
+      clearTimeout(resizeTimeOut);
+      resizeTimeOut = setTimeout(function () {
+        resizedw();
+      }, 300);
+    };
 
     let isMousedown = false
 
     const handleMousedown = (e) => {
       if (e.button === 0) { //only the left click
         isMousedown = true
-        let cellsToInfect = getCellsToInfect(cellSize, cellsInARow, canvas, e);
+        let cellsToInfect = getCellsToInfect(cellSize, cellsInARow, cellsInAColumn, canvas, e);
 
         if (cellsToInfect) {
           for (let i = 0; i < cellsToInfect.length; i++) {
@@ -82,7 +82,7 @@ function App() {
 
     const handleMousemove = (e) => {
       if (isMousedown) {
-        let cellsToInfect = getCellsToInfect(cellSize, cellsInARow, canvas, e);
+        let cellsToInfect = getCellsToInfect(cellSize, cellsInARow, cellsInAColumn, canvas, e);
 
         if (cellsToInfect) {
           for (let i = 0; i < cellsToInfect.length; i++) {
@@ -116,6 +116,39 @@ function App() {
 
   }, [newGenome])
 
+  const createCellsInCanvas = ctx => {
+    gameWidth = 0.9 * window.innerWidth
+    gameHeight = 0.85 * window.innerHeight
+    canvasWidth = gameWidth - 160
+    canvasHeight = gameHeight - 100
+    cellsInARow = Math.floor(canvasWidth / cellSize)
+    cellsInAColumn = Math.floor(canvasHeight / cellSize)
+
+    ctx.canvas.width = canvasWidth;
+    ctx.canvas.height = canvasHeight;
+
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    cells = []
+
+    for (let i = 0; i < cellsInARow; i++) {
+      cells[i] = new Array(cellsInAColumn)
+    }
+
+    for (let i = 0; i < cellsInARow; i++) {
+      for (let j = 0; j < cellsInAColumn; j++) {
+        let cell = new Cell(cellSize, i, j, ctx, null)
+        cells[i][j] = cell
+      }
+    }
+
+    for (let i = 0; i < cells.length; i++) {
+      for (let j = 0; j < cells[i].length; j++) {
+        cells[i][j].paint()
+      }
+    }
+
+  }
+
 
   const startCycle = () => {
     setcycleIntervalID(setTimeout(() => startCycle(), timeOutRef.current))
@@ -148,7 +181,6 @@ function App() {
       }
 
     }
-    console.log(infectedCells.length)
   }
 
   const stopCycle = () => {
@@ -158,10 +190,10 @@ function App() {
   return (
     <Box h="100%" style={{ backgroundColor: "#F7FAFC" }}>
       <TopBar />
-      <Box m="auto" w="700px" mt={10}>
+      <Box m="auto" w="90%" mt={10}>
         <Flex>
           <div>
-            <canvas id="canvas" ref={canvasRef} width={cellSize * cellsInARow} height={cellSize * cellsInARow} />
+            <canvas id="canvas" ref={canvasRef} />
             <CycleControl
               cycleTimeOut={cycleTimeOut}
               setcycleTimeOut={setcycleTimeOut}
