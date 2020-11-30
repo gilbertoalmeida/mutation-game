@@ -14,7 +14,13 @@ import {
   FormControl,
   FormLabel,
   Input,
-  ModalFooter
+  ModalFooter,
+  Text,
+  Center,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
 } from "@chakra-ui/react"
 
 let poolOfCellColors = [
@@ -45,6 +51,7 @@ function InfectingControl({ newGenome, setnewGenome, existingCellSpecies, setexi
 
   const [modalSelectedColor, setmodalSelectedColor] = useState(poolOfCellColors[0])
   const [modalCellName, setmodalCellName] = useState("")
+  const [modalMitosisVolume, setmodalMitosisVolume] = useState(30)
   const [invalidModalCellName, setinvalidModalCellName] = useState(false)
 
   useEffect(() => {
@@ -52,13 +59,15 @@ function InfectingControl({ newGenome, setnewGenome, existingCellSpecies, setexi
       {
         cellName: "cell 1",
         genome: {
-          color: poolOfCellColors[0]
+          color: poolOfCellColors[0],
+          mitosisVolume: 15
         }
       },
       {
         cellName: "cell 2",
         genome: {
-          color: poolOfCellColors[1]
+          color: poolOfCellColors[1],
+          mitosisVolume: 80
         }
       }
     ]
@@ -76,7 +85,8 @@ function InfectingControl({ newGenome, setnewGenome, existingCellSpecies, setexi
     const newCell = {
       cellName: modalCellName,
       genome: {
-        color: modalSelectedColor
+        color: modalSelectedColor,
+        mitosisVolume: modalMitosisVolume
       }
     }
 
@@ -127,6 +137,13 @@ function InfectingControl({ newGenome, setnewGenome, existingCellSpecies, setexi
               />
               )}
             </ButtonGroup>
+            <Text>Mitosis volume: {modalMitosisVolume}</Text>
+            <Slider colorScheme="pink" defaultValue={30} onChange={(val) => setmodalMitosisVolume(val)}>
+              <SliderTrack>
+                <SliderFilledTrack />
+              </SliderTrack>
+              <SliderThumb />
+            </Slider>
           </ModalBody>
 
           <ModalFooter>
@@ -144,8 +161,13 @@ function InfectingControl({ newGenome, setnewGenome, existingCellSpecies, setexi
 
       <Flex flexDirection="column" w="100%">
         {existingCellSpecies.map((cellSpecies, index) =>
-          <Box key={index} maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden" p="6">
-            <Button onClick={() => setnewGenome(cellSpecies.genome)} colorScheme={cellSpecies.genome.color.colorName} size="sm" w="100px">{cellSpecies.cellName}</Button>
+          <Box key={index} maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden" p="2">
+            <Center>
+              <Button onClick={() => setnewGenome(cellSpecies.genome)} colorScheme={cellSpecies.genome.color.colorName} size="sm" w="100px">{cellSpecies.cellName}</Button>
+            </Center>
+            <Box mt="4">
+              <Text>Mitosis volume: {cellSpecies.genome.mitosisVolume}</Text>
+            </Box>
           </Box>
         )}
       </Flex>

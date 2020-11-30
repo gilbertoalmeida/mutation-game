@@ -7,9 +7,8 @@ export default class Cell {
     this.ctx = ctx
     this.genome = genome
     this.dead = false
-    this.readyToMitosis = false
     this.volume = 10
-    this.mitosisVolume = 90
+    this.readyToMitosis = false
   }
 
   paint() {
@@ -32,7 +31,7 @@ export default class Cell {
     } else {
       this.eat()
 
-      if (this.volume > this.mitosisVolume) {
+      if (this.volume > this.genome.mitosisVolume) {
         this.readyToMitosis = true
       }
     }

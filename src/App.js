@@ -34,7 +34,8 @@ function App() {
       colorName: "blue",
       rgb: { r: 49, g: 130, b: 206 },
       hexColor: "#3182CE"
-    }
+    },
+    mitosisVolume: 20
   })
 
   const canvasRef = useRef(null)
@@ -168,12 +169,14 @@ function App() {
     setcycleNumber(cycleNumberRef.current + 1)
 
     for (let i = infectedCells.length - 1; i >= 0; i--) {
-      let neighbourCells = getNeighbourCells(infectedCells[i].i, infectedCells[i].j, cellsInARow)
+      let neighbourCells = getNeighbourCells(infectedCells[i].i, infectedCells[i].j, cellsInARow, cellsInAColumn)
       let sterileNeighbourCells = []
 
-      for (const neighbourCell of neighbourCells) {
-        if (!cells[neighbourCell[0]][neighbourCell[1]].genome) {
-          sterileNeighbourCells.push(cells[neighbourCell[0]][neighbourCell[1]])
+      if (neighbourCells.length > 0) {
+        for (const neighbourCell of neighbourCells) {
+          if (!cells[neighbourCell[0]][neighbourCell[1]].genome) {
+            sterileNeighbourCells.push(cells[neighbourCell[0]][neighbourCell[1]])
+          }
         }
       }
 
@@ -188,8 +191,9 @@ function App() {
           sterileNeighbourCells[chosenIndex].receiveGenome(infectedCells[i].genome)
           sterileNeighbourCells[chosenIndex].paint()
           sterileNeighbourCells[chosenIndex].volume = motherVolume / 2
-          infectedCells[i].volume = motherVolume / 2
           infectedCells.push(sterileNeighbourCells[chosenIndex])
+          infectedCells[i].volume = motherVolume / 2
+          infectedCells[i].readyToMitosis = false
         }
 
         infectedCells[i].metabolism()
