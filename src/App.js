@@ -224,7 +224,6 @@ function App() {
           </div>
           <Box ml="auto">
             <InfectingControl
-              newGenome={newGenome}
               setnewGenome={setnewGenome}
               existingCellSpecies={existingCellSpecies}
               setexistingCellSpecies={setexistingCellSpecies}
