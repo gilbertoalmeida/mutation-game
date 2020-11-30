@@ -44,19 +44,21 @@ function App() {
 
     const ctx = canvas.getContext('2d')
 
-    createCellsInCanvas(ctx);
-
-    let resizeTimeOut;
-    function resizedw() {
-      console.log("resized")
+    if (infectedCells.length === 0) {
       createCellsInCanvas(ctx);
+
     }
-    window.onresize = function () {
-      clearTimeout(resizeTimeOut);
-      resizeTimeOut = setTimeout(function () {
-        resizedw();
-      }, 300);
-    };
+
+    // let resizeTimeOut;
+    // function resizedw() {
+    //   createCellsInCanvas(ctx);
+    // }
+    // window.onresize = function () {
+    //   clearTimeout(resizeTimeOut);
+    //   resizeTimeOut = setTimeout(function () {
+    //     resizedw();
+    //   }, 300);
+    // };
 
     let isMousedown = false
 
@@ -117,6 +119,8 @@ function App() {
   }, [newGenome])
 
   const createCellsInCanvas = ctx => {
+    // let oldCanvasWidth = canvasWidth
+    // let oldCanvasHeight = canvasHeight
     gameWidth = 0.9 * window.innerWidth
     gameHeight = 0.85 * window.innerHeight
     canvasWidth = gameWidth - 160
@@ -124,11 +128,18 @@ function App() {
     cellsInARow = Math.floor(canvasWidth / cellSize)
     cellsInAColumn = Math.floor(canvasHeight / cellSize)
 
+
     ctx.canvas.width = canvasWidth;
     ctx.canvas.height = canvasHeight;
 
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    cells = []
+    //ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    // cells = []
+
+    // if (oldCanvasWidth < canvasWidth) {
+    //   console.log("aumentou")
+    //   let numberOfNewColumns = Math.floor((canvasWidth - oldCanvasWidth) / cellSize)
+
+    // } else {
 
     for (let i = 0; i < cellsInARow; i++) {
       cells[i] = new Array(cellsInAColumn)
@@ -140,12 +151,14 @@ function App() {
         cells[i][j] = cell
       }
     }
+    // }
 
     for (let i = 0; i < cells.length; i++) {
       for (let j = 0; j < cells[i].length; j++) {
         cells[i][j].paint()
       }
     }
+
 
   }
 
@@ -168,12 +181,15 @@ function App() {
         if (infectedCells[i].dead) {
           infectedCells.splice(i, 1)
         }
-        if (infectedCells[i].readyToMitosis) {
-          for (let s = 0; s < sterileNeighbourCells.length; s++) {
-            sterileNeighbourCells[s].receiveGenome(infectedCells[i].genome)
-            sterileNeighbourCells[s].paint()
-            infectedCells.push(sterileNeighbourCells[s])
-          }
+        if (infectedCells[i].readyToMitosis && sterileNeighbourCells.length > 0) {
+          const chosenIndex = Math.floor(Math.random() * sterileNeighbourCells.length)
+          const motherVolume = infectedCells[i].volume
+
+          sterileNeighbourCells[chosenIndex].receiveGenome(infectedCells[i].genome)
+          sterileNeighbourCells[chosenIndex].paint()
+          sterileNeighbourCells[chosenIndex].volume = motherVolume / 2
+          infectedCells[i].volume = motherVolume / 2
+          infectedCells.push(sterileNeighbourCells[chosenIndex])
         }
 
         infectedCells[i].metabolism()

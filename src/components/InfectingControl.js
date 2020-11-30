@@ -150,7 +150,7 @@ function InfectingControl({ newGenome, setnewGenome, existingCellSpecies, setexi
         )}
       </Flex>
 
-      <div>{newGenome.g === 130 ? "blue" : "green"}</div>
+
     </div>
   );
 }

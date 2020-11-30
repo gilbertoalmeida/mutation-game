@@ -1,13 +1,15 @@
 export default class Cell {
   constructor(cellSize, i, j, ctx, genome) {
     this.cellSize = cellSize;
-    this.foodAmount = 100;
+    this.foodAmount = 1000000;
     this.i = i;
     this.j = j;
     this.ctx = ctx
     this.genome = genome
     this.dead = false
     this.readyToMitosis = false
+    this.volume = 10
+    this.mitosisVolume = 90
   }
 
   paint() {
@@ -30,9 +32,7 @@ export default class Cell {
     } else {
       this.eat()
 
-      let b = Math.random()
-
-      if (b < 0.5) {
+      if (this.volume > this.mitosisVolume) {
         this.readyToMitosis = true
       }
     }
@@ -47,7 +47,9 @@ export default class Cell {
   }
 
   eat() {
-    this.foodAmount -= Math.random() * 5
+    const amountEaten = Math.random() * 5
+    this.foodAmount -= amountEaten
+    this.volume += amountEaten
   }
 
   death() {
